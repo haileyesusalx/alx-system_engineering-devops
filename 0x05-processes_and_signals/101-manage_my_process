@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+### BEGIN INIT INFO
+# Provides:          manage_my_process
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Manage my process
+# Description:       Manage the manage_my_process script
+### END INIT INFO
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+
+. /lib/init/vars.sh
+. /lib/lsb/init-functions
+
+DAEMON=/usr/bin/101-manage_my_process
+
+# Test if the program is executable
+test -x $DAEMON || exit 5
+
+case "$1" in
+  start)
+    log_daemon_msg "Starting manage_my_process"
+    start-stop-daemon --start --background --name manage_my_process --pidfile /var/run/manage_my_process.pid --make-pidfile --startas /bin/bash -- -c "$DAEMON start"
+    log_end_msg $?
+    ;;
+  stop)
+    log_daemon_msg "Stopping manage_my_process"
+    start-stop-daemon --stop --name manage_my_process --pidfile /var/run/manage_my_process.pid
+    log_end_msg $?
+    ;;
+  restart)
+    log_daemon_msg "Restarting manage_my_process"
+    start-stop-daemon --stop --name manage_my_process --pidfile /var/run/manage_my_process.pid
+    sleep 1
+    start-stop-daemon --start --background --name manage_my_process --pidfile /var/run/manage_my_process.pid --make-pidfile --startas /bin/bash -- -c "$DAEMON restart"
+    log_end_msg $?
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit 0
