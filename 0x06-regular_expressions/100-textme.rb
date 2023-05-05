@@ -1,15 +1,12 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ruby
 
-import sys
-import re
+log_file = ARGV[0]
 
-log_file = sys.argv[1]
-
-with open(log_file) as f:
-    for line in f:
-        match = re.search(r"\[from:(.*?)\] \[to:(.*?)\] \[flags:(.*?)\]", line)
-        if match:
-            sender = match.group(1)
-            receiver = match.group(2)
-            flags = match.group(3)
-            print(f"{sender},{receiver},{flags}")
+File.readlines(log_file).each do |line|
+  if line.match(/^(.*from:|to:|\[flags:)(.*?)\]?$/)
+    sender = $2 if line.match(/^.*from:(.*?)\]?$/)
+    receiver = $2 if line.match(/^.*to:(.*?)\]?$/)
+    flags = $2 if line.match(/^.*\[flags:(.*?)\]?$/)
+    puts "#{sender},#{receiver},#{flags}"
+  end
+end
