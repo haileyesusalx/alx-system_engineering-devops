@@ -1,23 +1,15 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env python3
+
+import sys
 import re
 
-# Define regular expressions to match the relevant fields in the log lines
-sender_pattern = r"\[from:([^]]+)\]"
-receiver_pattern = r"\[to:([^]]+)\]"
-flags_pattern = r"\[flags:([^]]+)\]"
+log_file = sys.argv[1]
 
-# Open the log file for reading
-with open("logfile.txt", "r") as f:
-    # Iterate over each line in the file
+with open(log_file) as f:
     for line in f:
-        # Use regular expressions to extract the sender, receiver, and flags
-        sender_match = re.search(sender_pattern, line)
-        receiver_match = re.search(receiver_pattern, line)
-        flags_match = re.search(flags_pattern, line)
-
-        # If all three fields were found, print them in the required format
-        if sender_match and receiver_match and flags_match:
-            sender = sender_match.group(1)
-            receiver = receiver_match.group(1)
-            flags = flags_match.group(1)
+        match = re.search(r"\[from:(.*?)\] \[to:(.*?)\] \[flags:(.*?)\]", line)
+        if match:
+            sender = match.group(1)
+            receiver = match.group(2)
+            flags = match.group(3)
             print(f"{sender},{receiver},{flags}")
