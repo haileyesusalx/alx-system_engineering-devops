@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+ip addr show | awk '/inet / {print $2}' | grep -oP '(\d+\.){3}\d+'
