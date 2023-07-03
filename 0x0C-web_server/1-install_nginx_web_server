@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # This script installs and configures Nginx web server
 
+set -euo pipefail
+
 # Update package lists
 apt-get update
 
@@ -11,5 +13,5 @@ apt-get install -y nginx
 echo "Hello World!" | tee /var/www/html/index.html >/dev/null
 
 # Restart Nginx without using systemctl
-service nginx stop
-service nginx start
+service nginx stop > /dev/null || true
+service nginx start > /dev/null || true
