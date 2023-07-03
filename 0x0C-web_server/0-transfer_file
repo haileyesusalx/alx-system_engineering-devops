@@ -1,13 +1,18 @@
-#!/bin/bash
-
-if [ $# -lt 4 ]; then
-  echo "Usage: $0 PATH_TO_FILE IP USERNAME PATH_TO_SSH_KEY"
-  exit 1
-fi
-
-path_to_file="$1"
+#!/usr/bin/env bash
+# Transfers a file from our client to a server
+#
+# variables
+path="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+filename=$(basename "$BASH_SOURCE")
+brown='\e[0;33m'
+reset='\033[0m'
+file="$1"
 ip="$2"
-username="$3"
-path_to_ssh_key="$4"
+user="$3"
+key="$4"
 
-scp -o StrictHostKeyChecking=no -i "$path_to_ssh_key" "$path_to_file" "$username@$ip:~/"
+if [ $# -eq 4 ]; then
+	scp -i "$key" -o StrictHostKeyChecking=no "$path"/"$file" "$user"@"$ip":/home/"$user"/
+else
+	echo -e "Usage: ${brown}$filename PATH_TO_FILE IP USERNAME PATH_TO_SSH_KEY${reset}"
+fi
