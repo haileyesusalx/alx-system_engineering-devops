@@ -1,11 +1,15 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# This script installs and configures Nginx web server
+
+# Update package lists
+apt-get update
 
 # Install Nginx
-apt-get update
 apt-get install -y nginx
 
 # Configure Nginx
-echo "Hello World!" > /var/www/html/index.html
+echo "Hello World!" | tee /var/www/html/index.html >/dev/null
 
-# Restart Nginx (alternative to systemctl)
-service nginx restart
+# Restart Nginx without using systemctl
+service nginx stop
+service nginx start
