@@ -1,7 +1,10 @@
+#!/usr/bin/env bash
 # SSH Config File
-#
-Host 211719-web-01
-	Hostname 35.168.8.253
-	User ubuntu
-	PasswordAuthentication no
-	IdentityFile ~/.ssh/school
+
+Host *
+    PasswordAuthentication no
+    IdentityFile ~/.ssh/school
+    SendEnv LANG LC_*
+    HashKnownHosts yes
+    GSSAPIAuthentication yes
+    GSSAPIDelegateCredentials no
