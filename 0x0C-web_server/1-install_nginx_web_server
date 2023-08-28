@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
-# Install Nginx
+# This script installs and configures Nginx web server
+
+# Update package lists
 apt-get update
+
+# Install Nginx
 apt-get install -y nginx
 
 # Configure Nginx to listen on port 80
