@@ -1,40 +1,40 @@
 #!/usr/bin/env bash
-# Configures a new ubuntu machine by installing
-# Nginx where it should be listening on port 80
-# Serve a page that would return a Hello World string
-#
-# colors
-blue='\e[1;34m'
-brown='\e[0;33m'
-green='\e[1;32m'
-reset='\033[0m'
 
-echo -e "${blue}Updating and installing ${brown}Nginx${blue}.${reset}\n"
-sudo apt-get update -y -qq && \
-	 sudo apt-get install nginx -y
+# Configure Nginx for redirection
 
-echo -e "\n${blue}Setting up some minor stuff.${reset}\n"
+# Update package list
+apt-get -y update
 
-# starting nginx service
-sudo service nginx start
+# Install Nginx
+apt-get -y install nginx
 
-# allowing nginx on firewall
-sudo ufw allow 'Nginx HTTP'
+# Create Nginx configuration for redirection
+echo "server {
+    listen 80;
+    server_name _;
 
-# Give the user ownership to website files for easy editing
-sudo chown -R "$USER":"$USER" /var/www/html
-sudo chmod -R 755 /var/www
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
 
-# Backup default index
-cp /var/www/html/index.nginx-debian.html /var/www/html/index.nginx-debian.html.bckp
+    location / {
+        echo 'Hello World!';
+    }
+}" | tee /etc/nginx/sites-available/redirect > /dev/null
 
-# Creating new index
-echo -e "Hello World!" > /var/www/html/index.nginx-debian.html
+# Create symbolic link to enable the site
+ln -s /etc/nginx/sites-available/redirect /etc/nginx/sites-enabled/
 
-# Setting up /redirect_me to a youtube video
-sudo sed -i '24i\	rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;' /etc/nginx/sites-available/default
+# Remove default symbolic link
+rm /etc/nginx/sites-enabled/default
 
-# Restarting nginx
-sudo service nginx restart
+# Reload Nginx configuration
+service nginx reload
 
-echo -e "\n${green}Completed.${reset} ✅\n"
+# Test redirection and show output
+echo "sylvain@ubuntu$ curl -sI 127.0.0.1/redirect_me/"
+curl -sI 127.0.0.1/redirect_me/
+echo "sylvain@ubuntu$"
+echo "Redirection test complete."
+
+# End of script
