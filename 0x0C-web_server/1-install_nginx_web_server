@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 # Update package list
 sudo apt-get -y update
 
@@ -18,6 +17,9 @@ echo "server {
 
 # Create symbolic link to enable the site
 sudo ln -s /etc/nginx/sites-available/hello-world /etc/nginx/sites-enabled/
+
+# Remove default symbolic link
+sudo rm /etc/nginx/sites-enabled/default
 
 # Reload Nginx configuration
 sudo service nginx reload
