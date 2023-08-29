@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 # Update package list
-apt-get -y update
+sudo apt-get -y update
 
 # Install Nginx
-apt-get -y install nginx
+sudo apt-get -y install nginx
 
-# Configure Nginx
+# Create Nginx configuration file
 echo "server {
     listen 80;
     server_name _;
@@ -14,10 +14,13 @@ echo "server {
     location / {
         echo 'Hello World!';
     }
-}" > /etc/nginx/sites-available/default
+}" | sudo tee /etc/nginx/sites-available/hello-world > /dev/null
+
+# Create symbolic link to enable the site
+sudo ln -s /etc/nginx/sites-available/hello-world /etc/nginx/sites-enabled/
 
 # Reload Nginx configuration
-service nginx reload
+sudo service nginx reload
 
 # Test Nginx
 curl -sI 127.0.0.1 | grep "HTTP/1.1 200 OK"
