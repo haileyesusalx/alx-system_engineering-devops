@@ -17,23 +17,14 @@ subdomains=(
   ["web-02"]="A"
 )
 
-# Function to query and display information for a subdomain
-query_subdomain() {
-  local sub="$1"
-  record_type="${subdomains[$sub]}"
-  dest=$(dig +short "$sub.$domain")
-  echo "The subdomain $sub is a $record_type record and points to $dest"
-}
-
-if [ -z "$subdomain" ]; then
-  for sub in "${!subdomains[@]}"; do
-    query_subdomain "$sub"
-  done
-else
-  if [ -n "${subdomains[$subdomain]}" ]; then
-    query_subdomain "$subdomain"
-  else
-    echo "Subdomain '$subdomain' is not configured or does not exist."
-    exit 1
+for sub in "${!subdomains[@]}"; do
+  if [ -z "$subdomain" ] || [ "$subdomain" == "$sub" ]; then
+    record_type="${subdomains[$sub]}"
+    dest=$(dig +short "$sub.$domain")
+    if [ -n "$dest" ]; then
+      echo "The subdomain $sub is a $record_type record and points to $dest"
+    else
+      echo "The subdomain $sub does not have a valid record"
+    fi
   fi
-fi
+done
