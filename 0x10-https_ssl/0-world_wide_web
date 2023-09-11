@@ -1,43 +1,27 @@
 #!/usr/bin/env bash
-# This script displays information about subdomains.
+# Usage: ./<file_name> <domain> <subdomain>
+# Display information about subdomains.
 
-if [ $# -lt 1 ]; then
-  echo "Usage: $0 <domain> [subdomain]"
-  exit 1
-fi
-
-domain="$1"
-subdomain="$2"
-
-declare -A subdomains
-subdomains=(
-  ["www"]="A"
-  ["lb-01"]="A"
-  ["web-01"]="A"
-  ["web-02"]="A"
-)
-
-# Function to query and display information for a subdomain
-query_subdomain() {
-  local sub="$1"
-  record_type="${subdomains[$sub]}"
-  dest=$(dig +short "$sub.$domain" | head -n 1)
-  if [ -n "$dest" ]; then
-    echo "The subdomain $sub is a $record_type record and points to $dest"
-  else
-    echo "The subdomain $sub is not configured."
-  fi
+# Function to retrieve and display information about the specified domain
+domain_information() {
+    # Perform DNS lookup for the subdomain under the specified domain
+    line=$(dig "$2" "$1" | grep -A1 'ANSWER SECTION:' | tr '\t' '\n' | tail -2 | tr '\n' '')
+    # Extract relevent information and display it
+    echo "$2 $line" | awk '(print "The subdomain " $1 " is a " $2 " record and points to " $3)'
 }
 
-if [ -z "$subdomain" ]; then
-  for sub in "${!subdomains[@]}"; do
-    query_subdomain "$sub"
-  done
-else
-  if [ -n "${subdomains[$subdomain]}" ]; then
-    query_subdomain "$subdomain"
-  else
-    echo "Subdomain '$subdomain' is not configured or does not exist."
-    exit 1
-  fi
+# Check the number of arguments passed to the script
+if [ "$#" == 1 ]
+then
+    # if there is only one argument,
+    # call the domain_information function with predefined subdomain names
+    domain_information "$1" "www"
+    domain_information "$1" "lb-01"
+    domain_information "$1" "web-01"
+    domain_information "$1" "web-02"
+elif [ "$#" == 2 ]
+then
+    # if there are two arguments, call the domain_information \
+    # call function with provided subdomain name
+    domain_information "$1" "$2"
 fi
