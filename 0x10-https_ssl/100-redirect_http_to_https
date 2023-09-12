@@ -40,10 +40,10 @@ frontend www-https
 
 backend www-backend
     balance roundrobin
+    reqadd X-Forwarded-Proto:\ https
     redirect scheme https if !{ ssl_fc }
     server 211719-web-01 54.198.60.71:80 check
     server web-02 100.26.177.201:80 check
-    reqadd X-Forwarded-Proto:\ https
 
 backend letsencrypt-backend
     server letsencrypt 127.0.0.1:54321
