@@ -1,0 +1,8 @@
+UFW Configuration for Port Forwarding from 8080 to 80:
+
+1. Changed the default forward policy to ACCEPT.
+2. Added the following rule to forward incoming traffic on port 8080 to port 80:
+   *nat
+   :PREROUTING ACCEPT [0:0]
+   -A PREROUTING -p tcp --dport 8080 -j REDIRECT --to-port 80
+   COMMIT
