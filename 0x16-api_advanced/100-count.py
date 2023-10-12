@@ -8,6 +8,7 @@ and prints a sorted count of given keywords.
 import requests
 from collections import defaultdict
 
+
 def count_words(subreddit, word_list, after=None, count_dict=None):
     """
     Recursively count keywords in the titles of hot articles for
@@ -54,7 +55,7 @@ def count_words(subreddit, word_list, after=None, count_dict=None):
         else:
             sorted_counts = sorted(
                 count_dict.items(),
-                key=lambda x: (x[0].lower(), -x[1])
+                key=lambda x: (-x[1], x[0].lower())
             )
             for word, count in sorted_counts:
                 if count > 0:  # Skip words with no matches
@@ -62,6 +63,7 @@ def count_words(subreddit, word_list, after=None, count_dict=None):
     else:
         # Print nothing for invalid subreddits
         print()
+
 
 if __name__ == '__main__':
     import sys
