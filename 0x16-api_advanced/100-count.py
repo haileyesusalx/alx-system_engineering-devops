@@ -51,9 +51,10 @@ def count_words(subreddit, word_list, after=None, count_dict=None):
             return count_words(subreddit, word_list, after, count_dict)
         else:
             sorted_counts = sorted(count_dict.items(),
-                                   key=lambda x: (-x[1], x[0]))
+                                   key=lambda x: (-x[1], x[0].lower()))
             for word, count in sorted_counts:
-                print(f"{word}: {count}")
+                if count > 0:
+                    print(f"{word.lower()}: {count}")
     else:
         # Print nothing for invalid subreddits
         print()
