@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 """
 This script defines a recursive function that queries the Reddit API, parses
-the title of all hot articles, and prints a sorted count of given keywords.
+the title of all hot articles,
+and prints a sorted count of given keywords.
 """
 
 import requests
@@ -9,8 +10,8 @@ import requests
 
 def count_words(subreddit, word_list, after=None, count_dict=None):
     """
-    Recursively count keywords in the titles of hot articles for a given
-    subreddit.
+    Recursively count keywords in the titles of hot articles for
+    a given subreddit.
 
     Args:
         subreddit (str): The name of the subreddit to query.
@@ -24,10 +25,14 @@ def count_words(subreddit, word_list, after=None, count_dict=None):
         count_dict = {}
 
     if after is None:
-        url = f'https://www.reddit.com/r/{subreddit}/hot.json?limit=100'
+        url = (
+            f'https://www.reddit.com/r/{subreddit}/hot.json?limit=100'
+        )
     else:
-        url = f'https://www.reddit.com/r/{subreddit}/hot.json?' \
-              f'limit=100&after={after}'
+        url = (
+            f'https://www.reddit.com/r/{subreddit}/hot.json?'
+            f'limit=100&after={after}'
+        )
 
     headers = {'User-Agent': 'Custom User Agent'}
 
@@ -50,10 +55,12 @@ def count_words(subreddit, word_list, after=None, count_dict=None):
         if after is not None:
             return count_words(subreddit, word_list, after, count_dict)
         else:
-            sorted_counts = sorted(count_dict.items(),
-                                   key=lambda x: (-x[1], x[0].lower()))
+            sorted_counts = sorted(
+                count_dict.items(),
+                key=lambda x: (-x[1], x[0].lower())
+            )
             for word, count in sorted_counts:
-                if count > 0:
+                if count > 0:  # Skip words with no matches
                     print(f"{word.lower()}: {count}")
     else:
         # Print nothing for invalid subreddits
