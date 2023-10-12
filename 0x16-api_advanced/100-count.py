@@ -55,6 +55,7 @@ def count_words(subreddit, word_list, after=None, count_dict=None):
             for word, count in sorted_counts:
                 print(f"{word}: {count}")
     else:
+        # Print nothing for invalid subreddits
         print()
 
 
